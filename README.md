@@ -47,12 +47,11 @@ This is a boilerplate for Cucumber webdriverIO for WEB automation
 ## Why
 
 - Why WebdriverIO? Why not something like Selenium
-  - It’s faster to set up, more scalable for mobile testing, and has a much better DX if you're using JS/TS.
+  - It’s faster to set up and has a much better DX if you're using JS/TS.
   - Can be used to test web and mobile(Appium + WDIO).
   - You don't manually manage the driver instance in the test code.
   - WebdriverIO internally manages the session and the driver(Both appium server and browser) for you — automatically per test, per session.
-    - When you do: `await $('~username').setValue('some user');`.WebdriverIO automatically knows which driver/session to send the command to.
-      You never need to explicitly pass the driver object around.
+    - When you do: `await $('~username').setValue('some user');`.WebdriverIO automatically knows which driver/session to send the command to. You never need to explicitly pass the driver object around.
 
 ## How
 
@@ -68,7 +67,7 @@ Since in my local i have installed the firefox using snap its not working hence 
 Test data is managed through json files. Below step is used to inject test data into the test.
 
 ```feature
-Given The app is launched and test data loaded from '/place-order/scenario1.json'
+Given user is on home page and test data present in "/FirstTimeOrder/Scenario01.json"
 ```
 
 [data-reader](features/utils/data-reader.ts) handles the test data reading logic.
@@ -128,11 +127,9 @@ Before(async () => {
 });
 ```
 
-Apart from the manual log, The framework will generate appium log, and spec reporting as well.
-
 ## Configuration
 
-Configuration is done though [.env](.env) file. The data is initalised in staring of the execution in [wdio.conf.ts](wdio.conf.ts) by using below command
+Configuration is done though [.env](.env) file. The data is initialized in staring of the execution in [wdio.conf.ts](wdio.conf.ts) by using below command
 
 ```ts
 import * as dotenv from 'dotenv';
@@ -152,17 +149,12 @@ After that we use [env.ts](features/utils/env.ts) to load env data and use every
   - `npx wdio run wdio.conf.ts --cucumberOpts.tagExpression="@smoke and @login"`
   - `npx wdio run wdio.conf.ts --cucumberOpts.tagExpression="@smoke or @regression"`
 - write spec report to file or execute `npm run spec`, if you want to append the spec log use `wdio run ./wdio.conf.ts >> logs/spec-output.log 2>&1` or `spec-append`
-- There are three main execution WDIO execution files are there:
-  - [wdio.conf.ts](wdio.conf.ts)
-  - [run-sharded.ts](run-sharded.ts) ([wdio.base.conf.ts](wdio.base.conf.ts) is part of this file)
 
 ### Pre test
 
-Folder cleanup task will be done through [pre-test.ts](features/utils/pre-test.ts this is called before executing the test in [package.json](package.json). we have added pre script in every execution.
+Folder cleanup task will be done through [pre-test.ts](features/utils/pre-test.ts) this is called before executing the test in [package.json](package.json). we have added pre script in every execution.
 
-Apart from the webdriver hook we also have [cucumber hooks](features/step-definitions/hooks.ts) as well, which help to other before test after test tasks such as opening and closing the app gracefully.
-
-Note: the app will open using [wdio.conf.ts](wdio.conf.ts) but using the cucumber hooks we can activate and close the app gracefully which will avoid unexpected behaviors.
+Apart from the webdriver hook we also have [cucumber hooks](features/step-definitions/hooks.ts) as well, which help to manage category in report. We can also use this to perform any other tasks in future as well.
 
 ### Execution
 
@@ -171,40 +163,9 @@ Execution will be start from [wdio.conf.ts](wdio.conf.ts).
 - The [Test data](#test-data) will be injected to the test.
 - The test data from json are stored in the [testData](features/utils/scenario-context.ts) and used across different steps of the test scenario.
 
-### Platform specific
+### Browser specific
 
-If there are any platform specif step we can execute that as below
-
-```ts
-Then('perform platform-specific action', async function () {
-  const isAndroid = driver.isAndroid; //driver is defined, initialized and manged by webdriverIO
-  const isIOS = driver.isIOS;
-
-  if (isAndroid) {
-    // Do Android-specific stuff
-  } else if (isIOS) {
-    // Do iOS-specific stuff
-  }
-});
-```
-
-If there are platform specific selectors we can manage those like below.
-
-```ts
-private get usernameField() {
-    return driver.isAndroid
-      ? $('~Username input field') // Android locator
-      : $('-ios predicate string:label == "Username input field"'); // iOS locator
-  }
-```
-
-Sometimes, driver.isAndroid and driver.isIOS may not behave as expected with older versions or certain setups. You can safely do:
-
-```ts
-const isAndroid =
-  browser.capabilities.platformName?.toLowerCase() === 'android';
-const isIOS = browser.capabilities.platformName?.toLowerCase() === 'ios';
-```
+[Browser management](#browser-management)
 
 ### Retry
 
@@ -214,5 +175,3 @@ const isIOS = browser.capabilities.platformName?.toLowerCase() === 'ios';
 ### Parallel execution
 
 WDIO natively does not support scenario level parallelism only support feature level parallelism.
-
-If we have multiple devices we can configure them in capabilities section of [run-sharded.ts](run-sharded.ts) file. We can add multiple device there. If we have only one device we cannot execute tests in parallel. If we have one feature file all the test in the feature file will be executed by a device.

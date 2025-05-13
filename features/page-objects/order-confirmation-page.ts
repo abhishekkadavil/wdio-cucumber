@@ -20,4 +20,6 @@ export class OrderConfirmationPage {
       'Your order has been successfully processed!'
     );
   }
+
+  async getOrderNo() {}
 }

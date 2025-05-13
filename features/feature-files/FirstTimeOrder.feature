@@ -20,6 +20,6 @@ Feature: First time credit card order
     Examples:
       | TestData                        |
       | /FirstTimeOrder/Scenario01.json |
-# | /FirstTimeOrder/Scenario02.json |
-# | /FirstTimeOrder/Scenario03.json |
-# | /FirstTimeOrder/Scenario04.json |
+      | /FirstTimeOrder/Scenario02.json |
+      | /FirstTimeOrder/Scenario03.json |
+      | /FirstTimeOrder/Scenario04.json |
