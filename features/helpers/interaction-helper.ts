@@ -2,6 +2,11 @@ import { ChainablePromiseElement } from 'webdriverio';
 import { expect } from 'chai';
 import { wait } from '../helpers/wait-util.ts';
 import allure from '@wdio/allure-reporter';
+import { EnvConfig } from '../utils/env.ts';
+import { config as wdioConfig } from '../../wdio.conf.ts';
+
+const DEFAULT_TIMEOUT =
+  Number(EnvConfig.ELEMENT_WAIT_TIMEOUT) || Number(wdioConfig.waitforTimeout);
 
 export class InteractionHelper {
   async verifyElementText(
@@ -55,7 +60,7 @@ export class InteractionHelper {
   async typeElement(
     element: ChainablePromiseElement,
     input: string,
-    timeout: number = 10000
+    timeout: number = DEFAULT_TIMEOUT
   ) {
     try {
       await element.waitForClickable({ timeout });
@@ -69,7 +74,7 @@ export class InteractionHelper {
 
   async clickElement(
     element: ChainablePromiseElement,
-    timeout: number = 10000
+    timeout: number = DEFAULT_TIMEOUT
   ) {
     try {
       await element.waitForClickable({ timeout });
@@ -84,7 +89,7 @@ export class InteractionHelper {
   async selectElementByText(
     element: ChainablePromiseElement,
     textToBeSelected: string,
-    timeout: number = 10000
+    timeout: number = DEFAULT_TIMEOUT
   ) {
     try {
       await element.waitForClickable({ timeout });
@@ -99,7 +104,7 @@ export class InteractionHelper {
   async selectElementByIndex(
     element: ChainablePromiseElement,
     index: number,
-    timeout: number = 10000
+    timeout: number = DEFAULT_TIMEOUT
   ) {
     try {
       await element.waitForClickable({ timeout });
@@ -113,7 +118,7 @@ export class InteractionHelper {
 
   async getText(
     element: ChainablePromiseElement,
-    timeout: number = 10000
+    timeout: number = DEFAULT_TIMEOUT
   ): Promise<string> {
     try {
       await element.waitForClickable({ timeout });
@@ -127,7 +132,7 @@ export class InteractionHelper {
   async getAttribute(
     element: ChainablePromiseElement,
     attName: string,
-    timeout: number = 10000
+    timeout: number = DEFAULT_TIMEOUT
   ): Promise<string> {
     try {
       await element.waitForClickable({ timeout });
